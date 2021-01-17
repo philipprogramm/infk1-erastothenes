@@ -1,137 +1,114 @@
 /**
- * Beschreiben Sie hier die Klasse Eratosthenes.
+ * class Erastothenes is used to work with primes
  * 
  * @author Philipp Stappert 
  * @version d20201214 (v1.0)
  */
-public class Eratosthenes {
-    // Instanzvariablen 
 
-    // Liste, welche den natürlichen Zahlen von 0 bis zu einer gegebenen Größe N einen Wahrheitswert bzgl. ihrer Primalität zuordnet
-    private boolean[] numberList; 
-    // Liste, welche die Primzahlen bis zu einer gegebenen Größe N beinhaltet
-    private int[] primeList;
+public class Eratosthenes {
+    // vars
+    private boolean[] numberList; // list with all numbers (in range)
+    private int[] primeList; // list with only primes
 
     /**
-     * Konstruktor für Objekte der Klasse Eratosthenes
+     * constructor for class Erastothenes
+     * 
+     * @param N maximum for prime calculation
      */
     public Eratosthenes(int N){
-        // Erste Instanzvariable initialisieren
-        // Liste mit Einträgen für die Zahlen von 0 bis N vorbereiten
-        numberList = new boolean[N+1];
-
-        // "Sieb des Eratosthenes":
-        // Alle Zahlen von 2 bis N vorläufig auf "prim" setzen
-        for (int i = 0; i <= N; i++){
+        numberList = new boolean[N+1]; // create list object
+        
+        // set all numbers above 1 to true
+        for (int i = 2; i <= N; i++){
             numberList[i] = true;
         }
 
-        //# AUFGABE 1a: Erstelle diesen fehlenden Teil für den Sieb-Algorithmus.
-
-        // Die geraden Zahlen > 2 aussieben, d. h. auf "zusammengesetzt" setzen
-        for (int i = 4; i <= N; i += 2){
-            numberList[i] = false;
-        }
-
-        //# AUFGABE 1b: Erstelle diesen fehlenden Teil für den Sieb-Algorithmus.
-
-        // Wähle die nächste Zahl nach 2 aus der Liste aus
-        // Solange das Quadrat dieser Zahl <= N ist, siebe alle Vielfachen dieser Zahl aus der Liste
-        // D. h. Setze Laufvariable k = 2 und solange das k-fache der Zahl <= N ist, siebe sie aus und erhöhe k um 1
-        // Wähle die nächste in der Liste verbliebene Zahl aus.
-        for (int i = 3; i <= N; ){
-            System.out.println(i);
-            for (int j = 2*i; j <= N; j += i){
-                numberList[j] = false;
-                System.out.println(j);
-            }
-            i = nextTrueValue(numberList, i, N);
-            if (i == -1){
-                break;
-            }
-            System.out.println("===========");
-        }
-        System.out.println("#################");
-        for (int i = 0; i <= N; i++){
+        // sieve primes
+        for(int i = 2; i*i <= N; i++){
+            // if number is prime,
             if (numberList[i] == true){
-                System.out.println(i);
-            } else {
-                System.out.println("no: " + i);
+                // sieve all multiples
+                for (int j = i*i; j <= N; j += i){
+                    numberList[j] = false;
+                }
             }
         }
 
-        //# AUFGABE 1c: Erstelle diesen fehlenden Teil für den Sieb-Algorithmus.
-
-        // Zweite Instanzvariable initialisieren 
-        // Die Primzahlliste hat soviel Einträge wie Primzahlen in der Liste der natürlichen Zahlen vorkommen
-        // Es wird also Methode numberOfPrimes() benötigt!
+        // create only primes list object
         primeList = new int[numberOfPrimes()];
 
-        // Trage die Primzahlen in die Liste ein
-
-        //# AUFGABE 3: Erstelle diesen Teil für die Liste
-
-    }
-
-    public int nextTrueValue (boolean[] inpArray, int beginWith, int maxVal){
-        int solution = -1;
-        for (int t = beginWith; t <= maxVal; t++){
-            if (inpArray[t] == true){
-                System.out.println("Found solution");
-                solution = t;
-                break;
+        // fill primes list
+        int q = 0;
+        for(int i = 0; i < N; i++){
+            if(numberList[i] == true){
+                primeList[q] = i;
+                q++;
             }
         }
-        return solution;
-    }
-
-    public static void main(String[] args) {
-        System.out.println("Running script...");
-        new Eratosthenes(20);
     }
 
     /**
-     * Methode, welche die Anzahl der Primzahlen in der Liste der natürlichen Zahlen ermittelt
-     * 
-     * @return      Anzahl der Primzahlen bis zu einer Größe N
+     * main function to test class
      */
+    public static void main(String[] args) {
+        Eratosthenes testSieb = new Eratosthenes(50);
+        System.out.println(testSieb.nthPrime(15));
+        System.out.println(testSieb.isPrime(17));
+    }
 
+    /**
+     * returns how many primes are in the number list (count)
+     * 
+     * @return prime count
+     */
     public int numberOfPrimes(){
         int n = 0;
 
-        //# AUFGABE 2: Erstelle diese Methode
+        // iterate threw list and count
+        for(int i = 0; i < numberList.length; i++) {
+            if(numberList[i] == true){
+                n++;
+            }
+        }
 
         return n;
     }
 
     /**
-     * Methode zur Ausgabe der n-ten Primzahl
+     * function to get nth prime
      * 
-     * @param  n    Natürliche Zahl zur Angabe des Gliedes in der Folge der Primzahlen
-     * @return      n-te Primzahl
+     * @param n (nth prime to get)
+     * @return the nth prime
      */
-
     public int nthPrime(int n){ 
+        // set standard value (P.S.: warum eigentlich? theoretisch könnte ich das weglassen, wird ja sowieso abgefangen)
         int p = -1;
 
-        //# AUFGABE 4: Erstelle diese Methode
+        // try to get prime out of list
+        try {
+            // get nth prime
+            p = primeList[n-1];
 
+        } catch (Exception e) {
+            // on error: set to -1
+            p = -1;
+        }
+        
+        // return result
         return p;
     }
 
     /**
-     * Methode zum Prüfen, ob eine Zahl eine Primzahl ist
+     * checks whether n is a prime or not
      * 
-     * @param  n    Natürliche Zahl, deren Primalität überprüft wird
-     * @return      Wahrheitswert, ob die Zahl prim (true) oder zusammengesetzt (false) ist
+     * @param n prime to check
+     * @return bool is a prime or not
      */
-
     public boolean isPrime(int n){
-        // Zur Ermittlung der Länge einer Liste verwende "Liste.length"
-
-        //# AUFGABE 5: Erstelle diese Methode
-
-        return false;
+        try {
+            return(numberList[n]);
+        } catch (Exception e) {
+            throw new ArithmeticException("The given number is out of the sieves range. Please create a new sieve instance with higher maximum.");
+        }
     }
-
 }
